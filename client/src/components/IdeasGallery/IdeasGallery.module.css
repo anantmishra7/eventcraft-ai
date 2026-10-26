@@ -1,0 +1,155 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.tabsNav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.tabBtn:hover {
+  border-color: var(--border-medium);
+  color: var(--primary);
+}
+
+.tabBtnActive {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  border-color: var(--primary);
+}
+
+.tabCount {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+}
+
+.tabBtnActive .tabCount {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.ideasGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.ideaCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.ideaCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-medium);
+}
+
+.ideaNumber {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.ideaText {
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.proTipsCard {
+  background: var(--accent-gold-light);
+  border: 1px solid var(--accent-gold);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.proTipsHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.proTipsIcon {
+  font-size: 1.5rem;
+}
+
+.proTipsTitle {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.proTipsList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.proTipItem {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  position: relative;
+  padding-left: 18px;
+}
+
+.proTipItem::before {
+  content: '★';
+  color: var(--accent-gold);
+  position: absolute;
+  left: 0;
+}

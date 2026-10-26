@@ -1,0 +1,120 @@
+.toastContainer {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+  max-width: 420px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+  animation: slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.icon {
+  font-size: 1.125rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.closeBtn {
+  font-size: 1.25rem;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.7;
+  padding: 4px;
+  border-radius: 4px;
+  transition: opacity var(--transition-fast);
+}
+
+.closeBtn:hover,
+.closeBtn:focus-visible {
+  opacity: 1;
+}
+
+/* Toast Variants with WCAG AA compliance */
+.success {
+  background-color: var(--success-light);
+  color: #14532d;
+  border-color: #86efac;
+}
+
+[data-theme='dark'] .success {
+  background-color: #064e3b;
+  color: #d1fae5;
+  border-color: #059669;
+}
+
+.danger {
+  background-color: var(--danger-light);
+  color: #7f1d1d;
+  border-color: #fca5a5;
+}
+
+[data-theme='dark'] .danger {
+  background-color: #7f1d1d;
+  color: #fee2e2;
+  border-color: #b91c1c;
+}
+
+.warning {
+  background-color: var(--warning-light);
+  color: #78350f;
+  border-color: #fcd34d;
+}
+
+[data-theme='dark'] .warning {
+  background-color: #78350f;
+  color: #fef3c7;
+  border-color: #d97706;
+}
+
+.info {
+  background-color: var(--info-light);
+  color: #0c4a6e;
+  border-color: #7dd3fc;
+}
+
+[data-theme='dark'] .info {
+  background-color: #0c4a6e;
+  color: #e0f2fe;
+  border-color: #0284c7;
+}
+
+@media (max-width: 640px) {
+  .toastContainer {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+  }
+}

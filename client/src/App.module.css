@@ -1,0 +1,222 @@
+.appWrap {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContainer {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 80px 20px;
+  flex: 1;
+}
+
+.mainContainer:focus {
+  outline: none;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.planBanner {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.bannerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.typeBadgeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.eventTypeBadge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent-rose) 100%);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.dateDaysBadge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--accent-gold-light);
+  color: var(--accent-gold);
+  border: 1px solid var(--accent-gold);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.planTitle {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.bannerActions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.newPlanBtn {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.newPlanBtn:hover {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  border-color: var(--primary);
+}
+
+.infoStrip {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+}
+
+.infoPill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+}
+
+.infoLabel {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.infoValue {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.budgetValue {
+  color: var(--primary);
+}
+
+.summaryWrap {
+  display: flex;
+  gap: 12px;
+  background: var(--primary-light);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  color: var(--text-primary);
+}
+
+.summaryIcon {
+  font-size: 1.25rem;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.summaryText {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.tabNavWrap {
+  border-bottom: 2px solid var(--border-subtle);
+  overflow-x: auto;
+}
+
+.tabList {
+  display: flex;
+  gap: 4px;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.tabBtn:hover {
+  color: var(--text-primary);
+}
+
+.tabBtnActive {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 700;
+}
+
+.tabContent {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.overviewGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+@media (max-width: 768px) {
+  .planBanner {
+    padding: 20px;
+  }
+  .bannerTop {
+    flex-direction: column;
+  }
+  .infoStrip {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

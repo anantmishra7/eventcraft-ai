@@ -1,0 +1,26 @@
+{
+  "name": "eventcraft-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EventCraft AI - Celebration & Event Planner (Full-Stack GenAI Planning Assistant)",
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -p \"[{name}]\" -n \"SERVER,CLIENT\" -c \"cyan.bold,magenta.bold\" \"npm run dev --workspace=server\" \"npm run dev --workspace=client\"",
+    "build": "npm run build --workspace=shared && npm run build --workspace=server && npm run build --workspace=client",
+    "start": "npm run start --workspace=server",
+    "test": "npm run test --workspace=server && npm run test --workspace=client",
+    "test:server": "npm run test --workspace=server",
+    "test:client": "npm run test --workspace=client",
+    "lint": "npm run lint --workspace=shared && npm run lint --workspace=server && npm run lint --workspace=client",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,css,md}\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
+  }
+}

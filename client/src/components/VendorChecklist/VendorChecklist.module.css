@@ -1,0 +1,251 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.summaryCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summaryTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.percentText {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--accent-emerald);
+}
+
+.countText {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.track {
+  width: 100%;
+  height: 10px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.vendorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+.vendorCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all var(--transition-fast);
+}
+
+.vendorCard:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-2px);
+}
+
+.vendorBooked {
+  border-color: #86efac;
+  background: var(--bg-card-subtle);
+}
+
+[data-theme='dark'] .vendorBooked {
+  border-color: #065f46;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.categoryBadge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  width: fit-content;
+}
+
+.vendorName {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.bookCheckWrap {
+  flex-shrink: 0;
+}
+
+.checkLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-tertiary);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.checkLabel:hover {
+  background: var(--border-subtle);
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-emerald);
+  cursor: pointer;
+}
+
+.checkText {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.costRange {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  background: var(--bg-card-subtle);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent-gold);
+}
+
+.costLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.costValue {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.questionsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.questionsTitle {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.questionsList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.questionItem {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  position: relative;
+  padding-left: 14px;
+  line-height: 1.4;
+}
+
+.questionItem::before {
+  content: '•';
+  color: var(--primary);
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.notesWrap {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notesLabel {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.notesText {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .summaryTop {
+    flex-direction: column;
+  }
+  .metric {
+    align-items: flex-start;
+  }
+}
