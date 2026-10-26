@@ -1,7 +1,9 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
+import fs from 'fs';
+import path from 'path';
 import { config } from './config/env';
 import { generalLimiter } from './middleware/rateLimiter';
 import { errorHandler } from './middleware/errorHandler';
@@ -60,15 +62,27 @@ export function createApp(): Application {
   app.use('/api/plan', planRoutes);
   app.use('/api/chat', chatRoutes);
 
-  // 7. 404 Catch-All
-  app.use((_req: Request, res: Response) => {
+  // 7. Serve Client SPA static assets and SPA fallback in production
+  const clientDistPath = path.resolve(__dirname, '../../client/dist');
+  if (fs.existsSync(clientDistPath)) {
+    app.use(express.static(clientDistPath));
+    app.get('*', (req: Request, res: Response, next: NextFunction) => {
+      if (req.path.startsWith('/api')) {
+        return next();
+      }
+      res.sendFile(path.join(clientDistPath, 'index.html'));
+    });
+  }
+
+  // 8. 404 Catch-All for unknown API routes
+  app.use('/api/*', (_req: Request, res: Response) => {
     res.status(404).json({
       success: false,
       error: 'Requested API endpoint not found',
     });
   });
 
-  // 8. Centralized Safe Error Handler
+  // 9. Centralized Safe Error Handler
   app.use(errorHandler);
 
   return app;
