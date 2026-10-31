@@ -11,6 +11,8 @@ services:
         value: production
       - key: NPM_CONFIG_PRODUCTION
         value: "false"
+      - key: CLIENT_URL
+        value: https://eventcraft-ai1.onrender.com
       - key: PORT
         value: 10000
       - key: GEMINI_API_KEY

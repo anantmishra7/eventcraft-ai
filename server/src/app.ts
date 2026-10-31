@@ -22,50 +22,129 @@ export function createApp(): Application {
     }),
   );
 
-  // 2. Strict CORS Configuration
-  const allowedOrigins = [
-    config.clientUrl,
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:3000',
-    'http://localhost:4173',
-  ];
-
-  app.use(
-    cors({
-      origin: (origin, callback) => {
-        // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1 || !config.isProduction) {
-          return callback(null, true);
-        }
-        return callback(new Error('Blocked by CORS policy'));
-      },
-      credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    }),
-  );
-
-  // 3. Response Compression
+  // 2. Response Compression
   app.use(compression());
+
+  // 3. Serve Client SPA static assets with permissive CORS for scripts, styles & fonts
+  const clientDistPath = path.resolve(__dirname, '../../client/dist');
+  if (fs.existsSync(clientDistPath)) {
+    app.use(
+      express.static(clientDistPath, {
+        maxAge: config.isProduction ? '1d' : 0,
+        setHeaders: (res, filePath) => {
+          // Allow cross-origin requests for static assets (required for <script type="module" crossorigin>)
+          res.setHeader('Access-Control-Allow-Origin', '*');
+          res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+          if (filePath.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-cache');
+          }
+        },
+      }),
+    );
+  }
+
+  // Explicit permissive CORS for /assets directory
+  app.use('/assets', (req: Request, res: Response, next: NextFunction) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(204);
+      return;
+    }
+    next();
+  });
 
   // 4. Request Body Size Limiting (Prevents payload inflation DoS)
   app.use(express.json({ limit: '100kb' }));
   app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
-  // 5. Global Rate Limiter
+  // 5. Targeted Strict CORS Configuration for API Routes
+  const allowedOrigins = [
+    'https://eventcraft-ai1.onrender.com',
+    config.clientUrl,
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:3000',
+    'http://localhost:4173',
+  ].filter(Boolean);
+
+  const apiCors = cors((req, callback) => {
+    const originHeader = req.headers.origin;
+    const origin = Array.isArray(originHeader) ? originHeader[0] : originHeader;
+    const hostHeader = req.headers.host;
+    const host = Array.isArray(hostHeader) ? hostHeader[0] : hostHeader;
+
+    // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+    if (!origin) {
+      return callback(null, { origin: true });
+    }
+
+    // Always allow during development / non-production
+    if (!config.isProduction) {
+      return callback(null, {
+        origin: true,
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+      });
+    }
+
+    // Allow configured production and dev origins
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, {
+        origin: true,
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+      });
+    }
+
+    // Same-origin verification & *.onrender.com wildcard support
+    try {
+      const originUrl = new URL(origin);
+
+      // Same-origin: origin host matches incoming Host header
+      if (host) {
+        const cleanHost = host.split(':')[0].toLowerCase();
+        if (originUrl.hostname.toLowerCase() === cleanHost) {
+          return callback(null, {
+            origin: true,
+            credentials: true,
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+          });
+        }
+      }
+
+      // Any Render deployment subdomain (*.onrender.com)
+      if (originUrl.hostname.toLowerCase().endsWith('.onrender.com')) {
+        return callback(null, {
+          origin: true,
+          credentials: true,
+          methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+          allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+        });
+      }
+    } catch {
+      // Malformed origin URL
+    }
+
+    return callback(new Error('Blocked by CORS policy'));
+  });
+
+  // Apply API-specific CORS
+  app.use('/api', apiCors);
+
+  // 6. Global Rate Limiter
   app.use('/api', generalLimiter);
 
-  // 6. API Route Handlers
+  // 7. API Route Handlers
   app.use('/api/health', healthRoutes);
   app.use('/api/plan', planRoutes);
   app.use('/api/chat', chatRoutes);
 
-  // 7. Serve Client SPA static assets and SPA fallback in production
-  const clientDistPath = path.resolve(__dirname, '../../client/dist');
+  // 8. Serve Client SPA static assets fallback in production
   if (fs.existsSync(clientDistPath)) {
-    app.use(express.static(clientDistPath));
     app.get('*', (req: Request, res: Response, next: NextFunction) => {
       if (req.path.startsWith('/api')) {
         return next();
@@ -74,7 +153,7 @@ export function createApp(): Application {
     });
   }
 
-  // 8. 404 Catch-All for unknown API routes
+  // 9. 404 Catch-All for unknown API routes
   app.use('/api/*', (_req: Request, res: Response) => {
     res.status(404).json({
       success: false,
@@ -82,7 +161,7 @@ export function createApp(): Application {
     });
   });
 
-  // 9. Centralized Safe Error Handler
+  // 10. Centralized Safe Error Handler
   app.use(errorHandler);
 
   return app;

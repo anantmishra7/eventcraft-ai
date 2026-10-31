@@ -31,6 +31,16 @@ export function errorHandler(
     return;
   }
 
+  // Handle CORS policy rejection
+  if (err instanceof Error && err.message === 'Blocked by CORS policy') {
+    logger.warn(`CORS rejected request from origin ${req.headers.origin || 'unknown'} at ${req.method} ${req.path}`);
+    res.status(403).json({
+      success: false,
+      error: 'Blocked by CORS policy',
+    });
+    return;
+  }
+
   // Handle standard HTTP / Runtime errors
   const status =
     typeof (err as { status?: number })?.status === 'number'
