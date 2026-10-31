@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@eventcraft/shared': path.resolve(__dirname, '../shared/src/index.ts'),
+      '@eventcraft/shared': path.resolve(__dirname, './src/shared/index.ts'),
     },
   },
   server: {

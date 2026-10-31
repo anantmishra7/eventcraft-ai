@@ -4,6 +4,11 @@ import {
   ChatAssistantRequest,
   ChatAssistantResponse,
 } from '@eventcraft/shared';
+import {
+  generateClientPlan,
+  generateClientChatResponse,
+  getClientDemoPlans,
+} from './clientPlanEngine';
 
 const API_BASE = '/api';
 
@@ -18,64 +23,85 @@ export const api = {
    * Generates a new event plan via backend Gemini AI or fallback demo
    */
   async generatePlan(input: EventSetupInput): Promise<GeneratePlanResult> {
-    const response = await fetch(`${API_BASE}/plan/generate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(input),
-    });
+    try {
+      const response = await fetch(`${API_BASE}/plan/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(input),
+      });
 
-    const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
-    if (!response.ok || !data.success) {
-      const errorMessage =
-        data.details && Array.isArray(data.details)
-          ? data.details
-              .map((d: { field: string; message: string }) => `${d.field}: ${d.message}`)
-              .join(', ')
-          : data.error || 'Failed to generate plan';
-      throw new Error(errorMessage);
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.error || 'Plan generation failed');
+      }
+
+      return {
+        plan: data.data,
+        isDemo: Boolean(data.isDemo),
+        isCached: Boolean(data.isCached),
+      };
+    } catch (error) {
+      console.warn('Backend unavailable, using client-side execution engine:', error);
+      const plan = generateClientPlan(input);
+      return {
+        plan,
+        isDemo: true,
+        isCached: false,
+      };
     }
-
-    return {
-      plan: data.data,
-      isDemo: Boolean(data.isDemo),
-      isCached: Boolean(data.isCached),
-    };
   },
 
   /**
    * Sends user follow-up message to the AI Assistant
    */
   async sendChatMessage(request: ChatAssistantRequest): Promise<ChatAssistantResponse> {
-    const response = await fetch(`${API_BASE}/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
+    try {
+      const response = await fetch(`${API_BASE}/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      });
 
-    const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.error || 'Failed to communicate with AI Assistant');
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.error || 'Chat assistant error');
+      }
+
+      return data.data;
+    } catch (error) {
+      console.warn('Backend unavailable, using client-side chat assistant:', error);
+      return generateClientChatResponse(request.message, request.currentPlan);
     }
-
-    return data.data;
   },
 
   /**
    * Fetches curated demo templates
    */
   async getDemoPlans(): Promise<Record<string, EventPlan>> {
-    const response = await fetch(`${API_BASE}/plan/demo-plans`);
-    const data = await response.json();
-    if (!response.ok || !data.success) {
-      throw new Error('Failed to load demo plans');
+    try {
+      const response = await fetch(`${API_BASE}/plan/demo-plans`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data) {
+          return data.data;
+        }
+      }
+    } catch {
+      // Fallback below
     }
-    return data.data;
+    return getClientDemoPlans();
   },
 
   /**
